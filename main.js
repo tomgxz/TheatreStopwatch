@@ -1,6 +1,6 @@
 class Stopwatch {
-    constructor(_name,text,num_element,desc_element) {
-        this.name = _name;
+    constructor(id,text,num_element,desc_element) {
+        this.id = id;
         this.text = text;
         this.el_main = num_element;
         this.el_desc = desc_element;
