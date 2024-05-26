@@ -12,6 +12,7 @@
     100% { color: white }
 }
 
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
@@ -41,17 +42,21 @@ h2 {
     font-size: 8rem;
 }
 
-.finished, .waiting {
+.stopwatch_finished, .stopwatch_waiting {
     animation-duration: 1000ms;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
     animation-play-state: running;
 }
 
-.finished {
+.stopwatch_finished {
     animation-name: finished;
 }
 
-.waiting {
+.stopwatch_waiting {
     animation-name: waiting;
+}
+
+.stopwatch_active {
+    color: white;
 }

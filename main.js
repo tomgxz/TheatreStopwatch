@@ -1,61 +1,81 @@
-$("h2").text("Since Clearance")
-$("h1").text("00:00")
-$("h1").addClass("waiting")
+class Stopwatch {
+    constructor(_name,text,num_element,desc_element) {
+        this.name = _name;
+        this.text = text;
+        this.el_main = num_element;
+        this.el_desc = desc_element;
 
-var stopwatch_hours = 0,
-    stopwatch_minutes = 0,
-    stopwatch_seconds = 0,
-    stopwatch_started = false,
-    stopwatch_finished = false;
+        this.hours = 0;
+        this.minutes = 0;
+        this.seconds = 0;
+        this.started = false;
+        this.finished = false;
+        this.interval = null;
 
-const start_stopwatch = () => {
-    stopwatch_started = true;
-    $("h1").removeClass("waiting")
+        this.el_main.text("00:00");
+        this.el_desc.text("Press space to start stopwatch");
+
+        this.el_main.addClass("stopwatch_waiting");
+    }
+
+    update() {
+        let hours = this.hours.toString(), minutes = this.minutes.toString(), seconds = this.seconds.toString(), output;
+
+        if (this.hours < 10) hours = `0${hours}`;
+        if (this.minutes < 10) minutes = `0${minutes}`;
+        if (this.seconds < 10) seconds = `0${seconds}`;
+
+        output = `${hours}:${minutes}:${seconds}`
+        if (this.hours < 1) output = `${minutes}:${seconds}`
+
+        this.el_main.text(output)
+    }
+
+    start() {
+        if (this.finished) return;
+
+        this.started = true;
+
+        this.el_main.addClass("stopwatch_active").removeClass("stopwatch_waiting")
+        this.el_desc.text(`Since ${this.text}`)
+
+        this.interval = setInterval(() => {
+
+            this.seconds++;
     
-    var interval = setInterval(function () {
+            if (this.seconds >= 60) {
+                this.seconds-=60;
+                this.minutes++;
     
-        stopwatch_seconds++;
-    
-        if (stopwatch_seconds >= 60) {
-            stopwatch_seconds-=60;
-            stopwatch_minutes++;
-    
-            if (stopwatch_minutes >= 60) {
-                stopwatch_minutes-=60;
-                stopwatch_hours++;
+                if (this.minutes >= 60) {
+                    this.minutes-=60;
+                    this.hours++;
+                }
             }
-        }
     
-        let string_hours = stopwatch_hours.toString(),
-            string_minutes = stopwatch_minutes.toString(),
-            string_seconds = stopwatch_seconds.toString();
-    
-        if (string_hours.length <= 1) string_hours = `0${string_hours}`
-        if (string_minutes.length <= 1) string_minutes = `0${string_minutes}`
-        if (string_seconds.length <= 1) string_seconds = `0${string_seconds}`
-    
-        let stopwatch_string = `${string_hours}:${string_minutes}:${string_seconds}`
-    
-        if (string_hours == "00") stopwatch_string = `${string_minutes}:${string_seconds}`
-    
-        $("h1").text(stopwatch_string)
-    
-        if (stopwatch_finished) {
-            $("h1").addClass("finished")
-            clearInterval(interval)
-        }
-    
-    }, 1000)
+            this.update();
+
+        }, 1000)
+    }
+
+    finish() {
+        if (this.finished) return;
+
+        this.started = false;
+        this.finished = true;
+
+        this.el_main.addClass("stopwatch_finished").removeClass("stopwatch_active")
+
+        clearInterval(this.interval)
+    }
 
 }
 
-const finish_stopwatch = () => {
-    stopwatch_finished = true;
-}
+var main_stopwatch = new Stopwatch("main","Clearance",$("h1"),$("h2"))
 
 $(document.body).on("keydown",function(e) {
     if (e.key == " " || e.code == "Space" || e.keyCode == 32 ) {
-        if (stopwatch_started) finish_stopwatch();
-        else start_stopwatch();
+        if (main_stopwatch.started) main_stopwatch.finish();
+        else main_stopwatch.start();
     }
 })
